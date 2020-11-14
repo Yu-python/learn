@@ -1,0 +1,34 @@
+
+
+
+<div class="card" style="width: 18rem;">
+                <div class="card-header">
+                    分类分组
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for foo in category_obj %}
+                    <li class="list-group-item"><a href="/blog/{{ username }}/category/{{ foo.0 }}">{{ foo.0 }}</a>  <span>({{ foo.1 }})</span> </li>
+                    {% endfor %}
+                </ul>
+            </div>
+<div class="card" style="width: 18rem;">
+                <div class="card-header">
+                    标签分组
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for foo in tag_obj %}
+                        <li class="list-group-item"><a href="/blog/{{ username }}/tag/{{ foo.0 }}"> {{ foo.0 }}</a> <span>({{ foo.1 }})</span> </li>
+                    {% endfor %}
+                </ul>
+            </div>
+<div class="card" style="width: 18rem;">
+                <div class="card-header">
+                    时间分组
+                </div>
+
+                <ul class="list-group list-group-flush">
+                    {% for foo in data_obj %}
+                        <li class="list-group-item"><a href="/blog/{{ username }}/date/{{ foo.0|date:'Y-m' }}/">{{ foo.0|date:'Y年m月' }}</a> <span>({{ foo.1 }})</span> </li>
+                    {% endfor %}
+                </ul>
+            </div>

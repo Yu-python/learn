@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/bootstrap4/css/bootstrap.min.css">
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/bootstrap4/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/bootstrap4/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row justify-content-md-center">
+        <div class="col-md-4">
+            <div class="card">
+            <div class="card-header">
+                <h1>注册</h1>
+            </div>
+
+                <div class="card-body">
+
+                    <form novalidate>
+                    {% csrf_token %}
+                        {% for foo in register_form %}
+                            <div class="form-group">
+                                <label for="{{ foo.id_for_label }}">{{ foo.label }}</label>
+                                {{ foo }}
+                            <span></span>
+                            </div>
+                        {% endfor %}
+                    <div><span id="__all__"></span></div>
+
+
+                        <div class="form-group form-check">
+                            图像
+                            <div class="">
+
+                                <label for="imgFile"><img src="/static/img/default.jpg" alt="" width="80px" height="80px" id="head"></label>
+                                <input type="file" id="imgFile" name="head" hidden>
+                            </div>
+                        </div>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-primary" id="register">注册</button>
+                    </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    // 图片加载
+    $('#imgFile').change(
+        function (){
+            var fileReader = new FileReader()
+            fileReader.readAsDataURL($('#imgFile')[0].files[0])
+            fileReader.onload=()=>{
+                $('#head').attr('src',fileReader.result)
+            }
+        }
+    )
+
+    $('#id_username').blur(function () {
+        var username = $(this).val()
+        $.ajax(
+            {
+                url: '/blog/check_user/?username=' + username,
+                type: 'get',
+                success: function (data) {
+                    console.log(data)
+                    if (data.code === 100) {
+                        $('#id_username').addClass('is-invalid').next("span").html(data.msg).addClass('text-danger')
+                    }
+ setTimeout(function () {
+                    $('#id_username').removeClass('is-invalid').next('span').html('').removeClass('text-danger')
+                },1000)
+                }
+
+
+            }
+
+
+
+        )
+
+    })
+    // 提交数据
+    $('#register').click(function () {
+        var formData = new FormData();
+        formData.append('head',$('#imgFile')[0].files[0])
+        var data= $('form').serializeArray()
+        $.each(data,function (k,v) {
+            console.log(k,v)
+            formData.append(v.name,v.value)
+        })
+        $.ajax({
+            url:'',
+            type:'post',
+            processData:false,
+            contentType:false,
+            data:formData,
+            success:function (data) {
+                console.log(data)
+                if(data.code===100){
+                    if (data.__all__){
+                        console.log(data.__all__,11111)
+                        $('#__all__').html(data.__all__).addClass('text-danger')
+                    }
+                    $.each(data,function (k,v) {
+                        console.log(k,v)
+                        $('#id_'+k).addClass('is-invalid').next('span').html(v).addClass('text-danger')
+                    }
+                    )
+                setTimeout(function () {
+                    $('.is-invalid').removeClass('is-invalid').next('span').html('').removeClass('text-danger')
+                },1000)
+                setTimeout(function () {
+                    $('#__all__').removeClass('text-danger').html('')
+                },1000)
+                }
+            }
+
+        })
+
+    })
+
+</script>
+
+</body>
+</html>
